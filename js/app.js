@@ -110,18 +110,25 @@ function wrapCanvasText(context, text, maxWidth) {
 function renderVideoCanvas(canvas, text) {
     const context = canvas.getContext("2d");
     const scale = canvas.width / 1080;
+    const textWidth = 390 * scale;
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.save();
     context.filter = "blur(2px)";
     context.fillStyle = "#000";
-    context.font = `500 ${100 * scale}px Arial Narrow, Arial, sans-serif`;
-    context.textAlign = "center";
+    context.font = `500 ${100 * scale}px BratNarrow, "Arial Narrow", Arial, sans-serif`;
     context.textBaseline = "middle";
-    const lines = wrapCanvasText(context, text, 390 * scale);
+    const lines = wrapCanvasText(context, text, textWidth);
     const lineHeight = 100 * scale;
     const startY = canvas.height / 2 - ((lines.length - 1) * lineHeight) / 2;
     lines.forEach((line, index) => {
-        context.fillText(line, canvas.width / 2, startY + index * lineHeight);
+        const words = line.split(/\s+/).filter(Boolean);
+        const wordWidth = words.reduce((total, word) => total + context.measureText(word).width, 0);
+        const gap = words.length > 1 ? (textWidth - wordWidth) / (words.length - 1) : 0;
+        let x = (canvas.width - textWidth) / 2;
+        for (const word of words) {
+            context.fillText(word, x, startY + index * lineHeight);
+            x += context.measureText(word).width + gap;
+        }
     });
     context.restore();
 }
@@ -197,6 +204,9 @@ function renderTimeline() {
 
 function timeFromPointer(event) {
     const track = document.querySelector(".timeline-track");
+    if (!track) {
+        return lyricTime;
+    }
     const rect = track.getBoundingClientRect();
     return Math.max(0, Math.min(lyricDuration, (event.clientX - rect.left) / pixelsPerSecond));
 }
@@ -212,6 +222,25 @@ function beginMarkerDrag(event, marker) {
             updateTrim(Math.min(time, trimEnd - 0.01), trimEnd);
         } else {
             updateTrim(trimStart, Math.max(time, trimStart + 0.01));
+        }
+    };
+    const finish = () => {
+        document.removeEventListener("pointermove", move);
+        document.removeEventListener("pointerup", finish);
+    };
+    document.addEventListener("pointermove", move);
+    document.addEventListener("pointerup", finish, { once: true });
+}
+
+function beginTimelineScrub(event) {
+    if (event.button !== 0 || event.target.closest(".timeline-handle, .playhead")) {
+        return;
+    }
+    event.preventDefault();
+    renderLyricTime(timeFromPointer(event));
+    const move = moveEvent => {
+        if (moveEvent.buttons & 1) {
+            renderLyricTime(timeFromPointer(moveEvent));
         }
     };
     const finish = () => {
@@ -402,12 +431,7 @@ timelineZoom.addEventListener("input", event => {
         renderLyricTime(lyricTime);
     }
 });
-timelineScroll.addEventListener("click", event => {
-    if (event.target.closest(".timeline-handle")) {
-        return;
-    }
-    renderLyricTime(timeFromPointer(event));
-});
+timelineScroll.addEventListener("pointerdown", beginTimelineScrub);
 timelineScroll.addEventListener("wheel", event => {
     if (event.altKey) {
         event.preventDefault();
@@ -425,7 +449,9 @@ timelineScroll.addEventListener("wheel", event => {
     timelineScroll.scrollLeft += event.deltaY || event.deltaX;
 }, { passive: false });
 window.addEventListener("keydown", event => {
-    if (!timelineScroll.matches(":hover") || !lyricLines.length) {
+    const lyricsPanelActive = document.getElementById("lyricsPanel").classList.contains("active");
+    const typingTarget = /INPUT|TEXTAREA|SELECT/.test(event.target.tagName);
+    if (!lyricsPanelActive || typingTarget || !lyricLines.length) {
         return;
     }
     if (event.code === "Space") {

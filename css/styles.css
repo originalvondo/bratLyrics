@@ -15,8 +15,10 @@
 
 html,
 body {
-    min-height: 100%;
+    width: 100%;
+    height: 100%;
     margin: 0;
+    overflow: hidden !important;
 }
 
 .tabs {
@@ -52,15 +54,17 @@ body {
 
 .mode-panel.active {
     display: block;
+    height: 100%;
+    overflow: hidden;
 }
 
 body {
-    overflow-x: hidden;
     background: #fff;
 }
 
 .app {
-    min-height: 100vh;
+    height: calc(100vh - 62px);
+    overflow: hidden !important;
     padding: 0 16px;
 }
 
@@ -136,9 +140,11 @@ body {
 
 .lyrics-editor {
     width: min(100%, 900px);
+    height: 100%;
     margin: 10px auto 40px;
     padding: 18px;
     border-top: 1px solid #000;
+    overflow: hidden;
 }
 
 .file-label {
@@ -215,6 +221,12 @@ body {
     overflow: hidden;
     border: 1px solid #000;
     background: #e9e9e9;
+    user-select: none;
+}
+
+.timeline-shell,
+.timeline-shell * {
+    user-select: none !important;
 }
 
 .track-label {
@@ -235,6 +247,7 @@ body {
     overflow-x: auto;
     overflow-y: hidden;
     background: #f4f4f4;
+    user-select: none;
 }
 
 .timeline-ruler {
@@ -358,6 +371,7 @@ body {
     white-space: nowrap;
     text-overflow: ellipsis;
     font: 13px/44px BratNarrow, "Arial Narrow", Arial, sans-serif;
+    user-select: none;
 }
 
 .timeline-segment.active {
