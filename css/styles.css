@@ -19,6 +19,41 @@ body {
     margin: 0;
 }
 
+.tabs {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border-bottom: 1px solid #000;
+    background: #fff;
+}
+
+.tab-button {
+    padding: 9px 16px;
+    border: 1px solid #000;
+    border-radius: 16px;
+    background: #fff;
+    color: #000;
+    cursor: pointer;
+    font: 15px BratNarrow, "Arial Narrow", Arial, sans-serif;
+}
+
+.tab-button.active {
+    background: #000;
+    color: #fff;
+}
+
+.mode-panel {
+    display: none;
+}
+
+.mode-panel.active {
+    display: block;
+}
+
 body {
     overflow-x: hidden;
     background: #fff;
@@ -99,6 +134,267 @@ body {
     text-transform: capitalize;
 }
 
+.lyrics-editor {
+    width: min(100%, 900px);
+    margin: 10px auto 40px;
+    padding: 18px;
+    border-top: 1px solid #000;
+}
+
+.file-label {
+    display: inline-block;
+    margin-bottom: 10px;
+    font: 16px BratNarrow, "Arial Narrow", Arial, sans-serif;
+}
+
+#lrcInput {
+    display: block;
+    width: 100%;
+    margin-bottom: 16px;
+    font: 14px BratNarrow, "Arial Narrow", Arial, sans-serif;
+}
+
+.editor-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.editor-toolbar button {
+    padding: 8px 14px;
+    border: 1px solid #000;
+    border-radius: 14px;
+    background: #fff;
+    color: #000;
+    cursor: pointer;
+    font: 14px BratNarrow, "Arial Narrow", Arial, sans-serif;
+}
+
+.editor-toolbar button:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+}
+
+.editor-toolbar button:not(:disabled):hover,
+.tab-button:not(:disabled):hover {
+    background: #000;
+    color: #fff;
+}
+
+#timeOutput {
+    min-width: 68px;
+    font: 14px BratNarrow, "Arial Narrow", Arial, sans-serif;
+}
+
+.timeline-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 22px 0 6px;
+    font: 14px BratNarrow, "Arial Narrow", Arial, sans-serif;
+    text-transform: uppercase;
+}
+
+.timeline-heading label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: none;
+}
+
+#timelineZoom {
+    width: 110px;
+    accent-color: #000;
+}
+
+.timeline-shell {
+    display: grid;
+    grid-template-columns: 76px minmax(0, 1fr);
+    min-height: 112px;
+    overflow: hidden;
+    border: 1px solid #000;
+    background: #e9e9e9;
+}
+
+.track-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid #000;
+    background: #d7d7d7;
+    color: #222;
+    font: 11px BratNarrow, "Arial Narrow", Arial, sans-serif;
+    letter-spacing: 0.08em;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+}
+
+.timeline-scroll {
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    background: #f4f4f4;
+}
+
+.timeline-ruler {
+    position: relative;
+    height: 34px;
+    border-bottom: 1px solid #b5b5b5;
+    background: #ededed;
+}
+
+.ruler-tick {
+    position: absolute;
+    top: 0;
+    height: 34px;
+    padding: 5px 0 0 5px;
+    border-left: 1px solid #999;
+    color: #555;
+    font: 11px Arial, sans-serif;
+    white-space: nowrap;
+}
+
+.playhead {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 5;
+    width: 1px;
+    background: #d20a0a;
+    cursor: ew-resize;
+}
+
+.playhead::before {
+    position: absolute;
+    top: 0;
+    left: -5px;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: #d20a0a;
+    content: "";
+}
+
+.timeline-handle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 6;
+    width: 12px;
+    cursor: ew-resize;
+    transform: translateX(-6px);
+}
+
+.timeline-handle::before {
+    position: absolute;
+    top: 0;
+    left: 2px;
+    width: 8px;
+    height: 13px;
+    border-radius: 0 0 4px 4px;
+    background: #2368d1;
+    color: #fff;
+    content: "";
+    font: 9px/13px Arial, sans-serif;
+    text-align: center;
+}
+
+.timeline-handle::after {
+    position: absolute;
+    top: 13px;
+    bottom: 0;
+    left: 5px;
+    width: 2px;
+    background: #2368d1;
+    content: "";
+}
+
+.timeline-handle[data-handle="in"]::before {
+    content: "I";
+}
+
+.timeline-handle[data-handle="out"]::before {
+    content: "O";
+}
+
+.video-preview {
+    display: none;
+    width: min(270px, 70vw);
+    height: auto;
+    margin: 10px auto 18px;
+    border: 1px solid #000;
+    background-color: #f7f7f7;
+}
+
+.video-preview.visible {
+    display: block;
+}
+
+.timeline {
+    position: relative;
+    min-height: 76px;
+    background: #fff;
+}
+
+.timeline-track {
+    position: relative;
+    min-width: 100%;
+    height: 76px;
+    background: repeating-linear-gradient(90deg, transparent 0, transparent 63px, rgba(0, 0, 0, 0.05) 64px);
+}
+
+.timeline-segment {
+    position: absolute;
+    top: 15px;
+    height: 46px;
+    min-width: 8px;
+    padding: 0 9px;
+    overflow: hidden;
+    border: 1px solid #999;
+    border-left: 3px solid #666;
+    border-radius: 3px;
+    background: #fff;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font: 13px/44px BratNarrow, "Arial Narrow", Arial, sans-serif;
+}
+
+.timeline-segment.active {
+    border-color: #000;
+    border-left-color: #000;
+    background: #dcdcdc;
+    color: #000;
+}
+
+.timeline-segment.active::after {
+    position: absolute;
+    inset: 0;
+    background: #000;
+    opacity: 0.12;
+    content: "";
+}
+
+.timeline-segment.outside {
+    opacity: 0.28;
+}
+
+.timeline-hint {
+    margin: 7px 0 0;
+    color: #555;
+    font: 12px BratNarrow, "Arial Narrow", Arial, sans-serif;
+}
+
+.editor-status {
+    margin: 10px 0 0;
+    font: 14px BratNarrow, "Arial Narrow", Arial, sans-serif;
+}
+
+.export-progress {
+    display: inline-block;
+    margin-left: 8px;
+}
+
 .sr-only {
     position: absolute;
     width: 1px;
@@ -111,6 +407,17 @@ body {
 }
 
 @media (max-width: 600px) {
+    .tabs {
+        gap: 4px;
+        padding: 10px 8px;
+    }
+
+    .tab-button {
+        flex: 1;
+        padding: 9px 6px;
+        font-size: 13px;
+    }
+
     .preview {
         height: 80vh;
         padding-top: 24px;
@@ -119,5 +426,14 @@ body {
     .text-overlay {
         height: 300px;
         font-size: clamp(48px, 15vw, 100px);
+    }
+
+    .lyrics-editor {
+        padding: 18px 0;
+    }
+
+    .trim-controls {
+        grid-template-columns: 1fr;
+        gap: 8px;
     }
 }

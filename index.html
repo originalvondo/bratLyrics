@@ -8,14 +8,45 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+    <nav class="tabs" aria-label="Generator modes">
+        <button class="tab-button active" type="button" data-panel="textPanel">brat text</button>
+        <button class="tab-button" type="button" data-panel="lyricsPanel">brat lyrics video</button>
+    </nav>
     <main class="app">
-        <section id="preview" class="preview" aria-label="Text preview">
-            <div id="textOverlay" class="text-overlay" aria-live="polite">hello world</div>
+        <section id="textPanel" class="mode-panel active" aria-label="Brat text">
+            <section id="preview" class="preview" aria-label="Text preview">
+                <div id="textOverlay" class="text-overlay" aria-live="polite">hello world</div>
+            </section>
+            <label class="sr-only" for="textInput">Text</label>
+            <input id="textInput" type="text" value="hello world" autocomplete="off" spellcheck="false">
+            <button id="savePngBtn" type="button">Save transparent PNG</button>
+            <p class="save-hint">Take a Screenshot to Save!</p>
         </section>
-        <label class="sr-only" for="textInput">Text</label>
-        <input id="textInput" type="text" value="hello world" autocomplete="off" spellcheck="false">
-        <button id="savePngBtn" type="button">Save transparent PNG</button>
-        <p class="save-hint">Take a Screenshot to Save!</p>
+        <section id="lyricsPanel" class="mode-panel" aria-label="Brat lyrics video">
+            <section class="lyrics-editor">
+            <label class="file-label" for="lrcInput">Upload LRC lyrics</label>
+            <input id="lrcInput" type="file" accept=".lrc,text/plain">
+            <div class="editor-toolbar">
+                <button id="playBtn" type="button" disabled>Play</button>
+                <button id="exportVideoBtn" type="button" disabled>Export ProRes 4444 MOV</button>
+                <output id="timeOutput">00:00.00</output>
+            </div>
+            <canvas id="videoPreviewCanvas" class="video-preview" width="540" height="960" aria-label="Transparent lyrics video preview"></canvas>
+            <div class="timeline-heading">
+                <span>Timeline</span>
+                <label>Zoom <input id="timelineZoom" type="range" min="24" max="140" value="64" step="4"></label>
+            </div>
+            <div class="timeline-shell">
+                <div class="track-label">LYRICS</div>
+                <div class="timeline-scroll">
+                    <div id="timelineRuler" class="timeline-ruler"></div>
+                    <div id="timeline" class="timeline" aria-label="Lyrics timeline"></div>
+                </div>
+            </div>
+                <p class="timeline-hint">Wheel: scroll · Alt + wheel: zoom · I: set In · O: set Out · Space: play/pause</p>
+            <p id="editorStatus" class="editor-status">Upload an LRC file to create a timeline.</p>
+            </section>
+        </section>
     </main>
     <script src="vendor/html2canvas.min.js"></script>
     <script src="js/app.js"></script>
